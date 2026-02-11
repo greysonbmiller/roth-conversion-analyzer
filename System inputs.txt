@@ -1,0 +1,27 @@
+System inputs:
+
+-Amount of people (single person or couple)
+-Age(s) of the people
+-Longevity (based on a simple questionnaire) with a default value
+-When they will retire or have retired
+-Provide taxable income quantity from 1040 tax form
+
+SOURCES OF INCOME
+-Income from social security
+	-If you haven't started social security when will you start receiving and how much do you expect?
+-Pensions (have they started, how much money, any cost of living adjustments, survivorship benefit)
+-Rental income (net after expenses of all properties)
+-Projected inheritances, how much and when
+-Other income (misc)
+
+CAPITAL
+[After tax taxable] 
+-In the bank, checkings, savings, money market, CD. (exclude what is considered an "emergency fund" and exclude money set aside for a big purchase in the next 5 years. 
+-How much in brokerage account and mutual funds that are not retirement accounts
+[Before tax deferred] (Separate spouse answers)
+-401k, 403B, 457, IRA, etc
+-Approximately how much is the average return of the portfolio over the past 20 years. We can provide the user a few templates (pie chart style) to match with their profile so they don't actually have to look up the returns themselves. 
+[After tax tax free] (Separate spouse answers)
+-Roth 401k, Roth IRA (another pie chart diagram here again)
+
+
