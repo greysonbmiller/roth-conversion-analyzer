@@ -98,7 +98,7 @@ function PortfolioSelector({ value, onChange, label }) {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               minWidth: '55px',
-              flex: '0 0 auto'
+              flex: '1 1 0'
             }}
             onMouseEnter={(e) => {
               if (value !== allocation.stocks) {
@@ -131,7 +131,6 @@ function PortfolioSelector({ value, onChange, label }) {
               color: '#999',
               whiteSpace: 'nowrap'
             }}>
-              {(allocation.return * 100).toFixed(0)}% return
             </span>
           </button>
         ))}

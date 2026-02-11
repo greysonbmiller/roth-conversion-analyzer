@@ -73,12 +73,71 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
 
   const [formData, setFormData] = useState(getInitialFormData);
 
+  // Helper function to format number with commas
+  const formatWithCommas = (value) => {
+    if (!value) return '';
+    // Remove any existing commas and non-digit characters except decimal point
+    const numStr = value.toString().replace(/,/g, '');
+    const parts = numStr.split('.');
+    // Add commas to the integer part
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  };
+
+  // Helper function to remove commas from formatted string
+  const removeCommas = (value) => {
+    if (!value) return '';
+    return value.toString().replace(/,/g, '');
+  };
+
+  // Fields that should have comma formatting (exclude age, longevity, year, and percentage fields)
+  const formattedFields = [
+    'taxable_income',
+    'social_security_person1',
+    'social_security_person2',
+    'pension_person1',
+    'pension_person2',
+    'rental_income',
+    'other_income',
+    'bank_accounts_person1',
+    'bank_accounts_person2',
+    'brokerage_non_retirement_person1',
+    'brokerage_non_retirement_person2',
+    'crypto_person1',
+    'crypto_person2',
+    'precious_metals_person1',
+    'precious_metals_person2',
+    'emergency_fund',
+    'large_purchases',
+    'before_tax_ira_person1',
+    'before_tax_ira_person2',
+    'roth_person1',
+    'roth_person2'
+  ];
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+
+    if (type === 'checkbox') {
+      setFormData({
+        ...formData,
+        [name]: checked,
+      });
+    } else if (formattedFields.includes(name)) {
+      // Only allow numbers, commas, and one decimal point
+      const cleanedValue = value.replace(/[^\d,\.]/g, '');
+      // Remove commas before storing the value
+      const unformattedValue = removeCommas(cleanedValue);
+      setFormData({
+        ...formData,
+        [name]: unformattedValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handlePortfolioChange = (accountType, allocation, returnRate) => {
@@ -326,9 +385,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             <Tooltip text="Your total taxable income from Form 1040. This determines your current marginal tax bracket and the tax cost of converting traditional IRA assets to Roth." />
           </label>
           <input
-            type="number"
+            type="text"
             name="taxable_income"
-            value={formData.taxable_income}
+            value={formatWithCommas(formData.taxable_income)}
             onChange={handleChange}
             min="0"
             required
@@ -349,9 +408,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Expected annual Social Security benefit. Social Security income is partially taxable and affects your overall tax bracket. Delaying benefits increases your monthly payment." />
             </label>
             <input
-              type="number"
+              type="text"
               name="social_security_person1"
-              value={formData.social_security_person1}
+              value={formatWithCommas(formData.social_security_person1)}
               onChange={handleChange}
               min="0"
             />
@@ -364,9 +423,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Expected annual Social Security benefit. Social Security income is partially taxable and affects your overall tax bracket. Delaying benefits increases your monthly payment." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="social_security_person2"
-                value={formData.social_security_person2}
+                value={formatWithCommas(formData.social_security_person2)}
                 onChange={handleChange}
                 min="0"
               />
@@ -415,9 +474,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Annual pension income from employer-sponsored defined benefit plans. Pension income is fully taxable as ordinary income." />
             </label>
             <input
-              type="number"
+              type="text"
               name="pension_person1"
-              value={formData.pension_person1}
+              value={formatWithCommas(formData.pension_person1)}
               onChange={handleChange}
               min="0"
             />
@@ -430,9 +489,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Annual pension income from employer-sponsored defined benefit plans. Pension income is fully taxable as ordinary income." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="pension_person2"
-                value={formData.pension_person2}
+                value={formatWithCommas(formData.pension_person2)}
                 onChange={handleChange}
                 min="0"
               />
@@ -578,9 +637,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Net rental income after expenses (mortgage, taxes, insurance, maintenance). Rental income is taxable and can affect your tax bracket." />
             </label>
             <input
-              type="number"
+              type="text"
               name="rental_income"
-              value={formData.rental_income}
+              value={formatWithCommas(formData.rental_income)}
               onChange={handleChange}
               min="0"
             />
@@ -592,9 +651,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Any other taxable income sources not listed elsewhere, such as business income, interest, dividends, or capital gains." />
             </label>
             <input
-              type="number"
+              type="text"
               name="other_income"
-              value={formData.other_income}
+              value={formatWithCommas(formData.other_income)}
               onChange={handleChange}
               min="0"
             />
@@ -620,9 +679,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Liquid cash holdings in savings, checking, CDs, and money market accounts. Interest earned is taxable annually." />
             </label>
             <input
-              type="number"
+              type="text"
               name="bank_accounts_person1"
-              value={formData.bank_accounts_person1}
+              value={formatWithCommas(formData.bank_accounts_person1)}
               onChange={handleChange}
               min="0"
             />
@@ -635,9 +694,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Liquid cash holdings in savings, checking, CDs, and money market accounts. Interest earned is taxable annually." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="bank_accounts_person2"
-                value={formData.bank_accounts_person2}
+                value={formatWithCommas(formData.bank_accounts_person2)}
                 onChange={handleChange}
                 min="0"
               />
@@ -652,9 +711,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Non-retirement investment accounts including taxable brokerage accounts, mutual funds in individual/joint/trust names. Capital gains are taxed when realized." />
             </label>
             <input
-              type="number"
+              type="text"
               name="brokerage_non_retirement_person1"
-              value={formData.brokerage_non_retirement_person1}
+              value={formatWithCommas(formData.brokerage_non_retirement_person1)}
               onChange={handleChange}
               min="0"
             />
@@ -667,9 +726,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Non-retirement investment accounts including taxable brokerage accounts, mutual funds in individual/joint/trust names. Capital gains are taxed when realized." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="brokerage_non_retirement_person2"
-                value={formData.brokerage_non_retirement_person2}
+                value={formatWithCommas(formData.brokerage_non_retirement_person2)}
                 onChange={handleChange}
                 min="0"
               />
@@ -684,9 +743,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Current market value of cryptocurrency holdings (Bitcoin, Ethereum, etc.). Crypto is treated as property by the IRS, with capital gains tax on sales or exchanges." />
             </label>
             <input
-              type="number"
+              type="text"
               name="crypto_person1"
-              value={formData.crypto_person1}
+              value={formatWithCommas(formData.crypto_person1)}
               onChange={handleChange}
               min="0"
             />
@@ -699,9 +758,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Current market value of cryptocurrency holdings (Bitcoin, Ethereum, etc.). Crypto is treated as property by the IRS, with capital gains tax on sales or exchanges." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="crypto_person2"
-                value={formData.crypto_person2}
+                value={formatWithCommas(formData.crypto_person2)}
                 onChange={handleChange}
                 min="0"
               />
@@ -716,9 +775,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Market value of physical precious metals (gold, silver, platinum, palladium). Collectibles and precious metals are subject to higher capital gains tax rates (28% max) when sold." />
             </label>
             <input
-              type="number"
+              type="text"
               name="precious_metals_person1"
-              value={formData.precious_metals_person1}
+              value={formatWithCommas(formData.precious_metals_person1)}
               onChange={handleChange}
               min="0"
             />
@@ -731,9 +790,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Market value of physical precious metals (gold, silver, platinum, palladium). Collectibles and precious metals are subject to higher capital gains tax rates (28% max) when sold." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="precious_metals_person2"
-                value={formData.precious_metals_person2}
+                value={formatWithCommas(formData.precious_metals_person2)}
                 onChange={handleChange}
                 min="0"
               />
@@ -753,9 +812,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Amount set aside as emergency reserves (typically 3-6 months of expenses). These funds should remain liquid and not be used for conversion tax payments." />
             </label>
             <input
-              type="number"
+              type="text"
               name="emergency_fund"
-              value={formData.emergency_fund}
+              value={formatWithCommas(formData.emergency_fund)}
               onChange={handleChange}
               min="0"
             />
@@ -767,9 +826,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               <Tooltip text="Funds earmarked for known upcoming expenses like home purchase, vehicle, education, or other major expenditures within 5 years." />
             </label>
             <input
-              type="number"
+              type="text"
               name="large_purchases"
-              value={formData.large_purchases}
+              value={formatWithCommas(formData.large_purchases)}
               onChange={handleChange}
               min="0"
             />
@@ -783,7 +842,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
           borderRadius: '8px',
           marginTop: '25px',
           marginBottom: '20px',
-          border: '2px solid #93c5fd'
+          border: '2px solid #93c5fd',
+          maxWidth: formData.num_people === 'single' ? '600px' : '100%',
+          transition: 'max-width 0.3s ease'
         }}>
           <h3 style={{
             fontSize: '1.2rem',
@@ -802,9 +863,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Total balance in traditional IRA, 401k, 403b, 457, SEP-IRA, or SIMPLE IRA accounts. These are the primary candidates for Roth conversion." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="before_tax_ira_person1"
-                value={formData.before_tax_ira_person1}
+                value={formatWithCommas(formData.before_tax_ira_person1)}
                 onChange={handleChange}
                 min="0"
                 required
@@ -818,9 +879,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                   <Tooltip text="Total balance in traditional IRA, 401k, 403b, 457, SEP-IRA, or SIMPLE IRA accounts. These are the primary candidates for Roth conversion." />
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="before_tax_ira_person2"
-                  value={formData.before_tax_ira_person2}
+                  value={formatWithCommas(formData.before_tax_ira_person2)}
                   onChange={handleChange}
                   min="0"
                 />
@@ -851,7 +912,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
           padding: '20px',
           borderRadius: '8px',
           marginBottom: '20px',
-          border: '2px solid #86efac'
+          border: '2px solid #86efac',
+          maxWidth: formData.num_people === 'single' ? '600px' : '100%',
+          transition: 'max-width 0.3s ease'
         }}>
           <h3 style={{
             fontSize: '1.2rem',
@@ -870,9 +933,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                 <Tooltip text="Total balance in Roth IRA, Roth 401k, or Roth 403b accounts. These grow tax-free and have no required distributions during your lifetime." />
               </label>
               <input
-                type="number"
+                type="text"
                 name="roth_person1"
-                value={formData.roth_person1}
+                value={formatWithCommas(formData.roth_person1)}
                 onChange={handleChange}
                 min="0"
               />
@@ -885,9 +948,9 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
                   <Tooltip text="Total balance in Roth IRA, Roth 401k, or Roth 403b accounts. These grow tax-free and have no required distributions during your lifetime." />
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="roth_person2"
-                  value={formData.roth_person2}
+                  value={formatWithCommas(formData.roth_person2)}
                   onChange={handleChange}
                   min="0"
                 />

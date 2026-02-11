@@ -6,6 +6,23 @@ function PreFormQuestionnaire({ onComplete }) {
     legacyAmount: ''
   });
 
+  // Helper function to format number with commas
+  const formatWithCommas = (value) => {
+    if (!value) return '';
+    // Remove any existing commas and non-digit characters except decimal point
+    const numStr = value.toString().replace(/,/g, '');
+    const parts = numStr.split('.');
+    // Add commas to the integer part
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+  };
+
+  // Helper function to remove commas from formatted string
+  const removeCommas = (value) => {
+    if (!value) return '';
+    return value.toString().replace(/,/g, '');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (answers.believeTaxesWillIncrease === null || !answers.legacyAmount) {
@@ -137,7 +154,7 @@ function PreFormQuestionnaire({ onComplete }) {
               marginBottom: '12px',
               fontSize: '1.05rem'
             }}>
-              2. How much money do you want to leave to your children and grandchildren tax-free?
+              2. How much money from your current 401k/IRA would you like to leave to your kids tax free?
             </label>
             <div style={{ position: 'relative' }}>
               <span style={{
@@ -152,9 +169,15 @@ function PreFormQuestionnaire({ onComplete }) {
                 $
               </span>
               <input
-                type="number"
-                value={answers.legacyAmount}
-                onChange={(e) => setAnswers({ ...answers, legacyAmount: e.target.value })}
+                type="text"
+                value={formatWithCommas(answers.legacyAmount)}
+                onChange={(e) => {
+                  // Only allow numbers, commas, and one decimal point
+                  const cleanedValue = e.target.value.replace(/[^\d,\.]/g, '');
+                  // Remove commas before storing the value
+                  const unformattedValue = removeCommas(cleanedValue);
+                  setAnswers({ ...answers, legacyAmount: unformattedValue });
+                }}
                 min="0"
                 placeholder="Enter amount"
                 style={{
