@@ -1,0 +1,17 @@
+.git/
+.gitignore
+*.md
+.env
+.env.local
+node_modules/
+venv/
+__pycache__/
+*.pyc
+dist/
+build/
+*.log
+.DS_Store
+Income Tax Rates.jpg
+System inputs.txt
+start.bat
+start.ps1

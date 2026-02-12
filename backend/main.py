@@ -6,9 +6,10 @@ from calculator import analyze_roth_conversion
 app = FastAPI(title="Roth IRA Conversion Analyzer", version="1.0.0")
 
 # Configure CORS
+# Allow localhost for development and any origin for production (requests come through nginx proxy)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://localhost"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -19,7 +19,8 @@ CSI Wealth/
 │   ├── models.py            # Pydantic data models
 │   ├── calculator.py        # Roth conversion calculation logic
 │   ├── requirements.txt     # Python dependencies
-│   └── .env.example         # Environment variables template
+│   ├── Dockerfile           # Backend container configuration
+│   └── .dockerignore        # Docker ignore file
 ├── frontend/                 # React frontend
 │   ├── src/
 │   │   ├── App.jsx          # Main React component
@@ -27,13 +28,36 @@ CSI Wealth/
 │   │   ├── api.js           # API client
 │   │   └── main.jsx         # Entry point
 │   ├── package.json         # Node dependencies
-│   └── vite.config.js       # Vite configuration
+│   ├── vite.config.js       # Vite configuration
+│   ├── Dockerfile           # Frontend container configuration
+│   ├── nginx.conf           # Nginx production configuration
+│   └── .dockerignore        # Docker ignore file
+├── docker-compose.yml       # Development orchestration
+├── docker-compose.prod.yml  # Production orchestration
+├── DEPLOYMENT.md            # Detailed deployment guide
+├── DOCKER.md                # Docker quick reference
 └── README.md                # This file
 ```
 
 ## Getting Started
 
-### Quick Start (Recommended)
+### Docker Deployment (Recommended for Production)
+
+The easiest way to deploy this application is using Docker:
+
+```bash
+# For local development
+docker compose up -d
+
+# For production deployment
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Access the application at `http://localhost` (or your VPS IP address).
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+### Quick Start (Local Development)
 
 **Dependencies are already installed!** Simply run the startup script:
 
@@ -144,6 +168,11 @@ The analyzer considers:
 - React 18 - UI library
 - Vite - Fast build tool and dev server
 - Axios - HTTP client
+- Nginx - Production web server
+
+**Infrastructure:**
+- Docker - Containerization
+- Docker Compose - Multi-container orchestration
 
 ## Notes
 
