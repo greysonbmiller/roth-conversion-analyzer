@@ -3,7 +3,7 @@ from typing import Optional, Literal, List
 
 
 class Demographics(BaseModel):
-    num_people: Literal["single", "couple"]
+    num_people: Literal["single", "married_jointly", "married_separately", "head_of_household"]
     age_person1: int = Field(ge=18, le=100)
     age_person2: Optional[int] = Field(None, ge=18, le=100)
     longevity_person1: int = Field(default=90, ge=60, le=120)

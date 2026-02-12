@@ -73,6 +73,11 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
 
   const [formData, setFormData] = useState(getInitialFormData);
 
+  // Helper function to check if spouse fields should be shown
+  const showSpouseFields = () => {
+    return formData.num_people === 'married_jointly' || formData.num_people === 'married_separately';
+  };
+
   // Helper function to format number with commas
   const formatWithCommas = (value) => {
     if (!value) return '';
@@ -158,15 +163,15 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         demographics: {
           num_people: formData.num_people,
           age_person1: parseInt(formData.age_person1),
-          age_person2: formData.num_people === 'couple' && formData.age_person2
+          age_person2: showSpouseFields() && formData.age_person2
             ? parseInt(formData.age_person2)
             : null,
           longevity_person1: parseInt(formData.longevity_person1),
-          longevity_person2: formData.num_people === 'couple' && formData.longevity_person2
+          longevity_person2: showSpouseFields() && formData.longevity_person2
             ? parseInt(formData.longevity_person2)
             : null,
           retirement_year_person1: parseInt(formData.retirement_year_person1),
-          retirement_year_person2: formData.num_people === 'couple' && formData.retirement_year_person2
+          retirement_year_person2: showSpouseFields() && formData.retirement_year_person2
             ? parseInt(formData.retirement_year_person2)
             : null,
           taxable_income: parseFloat(formData.taxable_income),
@@ -180,17 +185,17 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
           pension_cola_person1: formData.pension_cola_person1,
           pension_survivorship_person1: parseFloat(formData.pension_survivorship_person1) || 0,
 
-          social_security_person2: formData.num_people === 'couple' && formData.social_security_person2
+          social_security_person2: showSpouseFields() && formData.social_security_person2
             ? parseFloat(formData.social_security_person2)
             : null,
-          social_security_start_age_person2: formData.num_people === 'couple' && formData.social_security_person2 > 0
+          social_security_start_age_person2: showSpouseFields() && formData.social_security_person2 > 0
             ? parseInt(formData.social_security_start_age_person2)
             : null,
-          pension_person2: formData.num_people === 'couple' && formData.pension_person2
+          pension_person2: showSpouseFields() && formData.pension_person2
             ? parseFloat(formData.pension_person2)
             : null,
-          pension_cola_person2: formData.num_people === 'couple' ? formData.pension_cola_person2 : null,
-          pension_survivorship_person2: formData.num_people === 'couple' && formData.pension_survivorship_person2
+          pension_cola_person2: showSpouseFields() ? formData.pension_cola_person2 : null,
+          pension_survivorship_person2: showSpouseFields() && formData.pension_survivorship_person2
             ? parseFloat(formData.pension_survivorship_person2)
             : null,
 
@@ -204,16 +209,16 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
           crypto_person1: parseFloat(formData.crypto_person1) || 0,
           precious_metals_person1: parseFloat(formData.precious_metals_person1) || 0,
 
-          bank_accounts_person2: formData.num_people === 'couple' && formData.bank_accounts_person2
+          bank_accounts_person2: showSpouseFields() && formData.bank_accounts_person2
             ? parseFloat(formData.bank_accounts_person2)
             : null,
-          brokerage_non_retirement_person2: formData.num_people === 'couple' && formData.brokerage_non_retirement_person2
+          brokerage_non_retirement_person2: showSpouseFields() && formData.brokerage_non_retirement_person2
             ? parseFloat(formData.brokerage_non_retirement_person2)
             : null,
-          crypto_person2: formData.num_people === 'couple' && formData.crypto_person2
+          crypto_person2: showSpouseFields() && formData.crypto_person2
             ? parseFloat(formData.crypto_person2)
             : null,
-          precious_metals_person2: formData.num_people === 'couple' && formData.precious_metals_person2
+          precious_metals_person2: showSpouseFields() && formData.precious_metals_person2
             ? parseFloat(formData.precious_metals_person2)
             : null,
 
@@ -221,28 +226,28 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
           large_purchases: parseFloat(formData.large_purchases) || 0,
 
           before_tax_ira_person1: parseFloat(formData.before_tax_ira_person1) || 0,
-          before_tax_ira_person2: formData.num_people === 'couple' && formData.before_tax_ira_person2
+          before_tax_ira_person2: showSpouseFields() && formData.before_tax_ira_person2
             ? parseFloat(formData.before_tax_ira_person2)
             : null,
           roth_person1: parseFloat(formData.roth_person1) || 0,
-          roth_person2: formData.num_people === 'couple' && formData.roth_person2
+          roth_person2: showSpouseFields() && formData.roth_person2
             ? parseFloat(formData.roth_person2)
             : null,
 
           allocation_traditional_person1: parseInt(formData.allocation_traditional_person1),
           return_traditional_person1: parseFloat(formData.return_traditional_person1),
-          allocation_traditional_person2: formData.num_people === 'couple'
+          allocation_traditional_person2: showSpouseFields()
             ? parseInt(formData.allocation_traditional_person2)
             : null,
-          return_traditional_person2: formData.num_people === 'couple'
+          return_traditional_person2: showSpouseFields()
             ? parseFloat(formData.return_traditional_person2)
             : null,
           allocation_roth_person1: parseInt(formData.allocation_roth_person1),
           return_roth_person1: parseFloat(formData.return_roth_person1),
-          allocation_roth_person2: formData.num_people === 'couple'
+          allocation_roth_person2: showSpouseFields()
             ? parseInt(formData.allocation_roth_person2)
             : null,
-          return_roth_person2: formData.num_people === 'couple'
+          return_roth_person2: showSpouseFields()
             ? parseFloat(formData.return_roth_person2)
             : null,
         },
@@ -265,12 +270,14 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
 
         <div className="form-group">
           <label>
-            Household Type
-            <Tooltip text="Select your filing status. 'Married/Couple' uses joint tax brackets and allows entering data for both spouses separately." />
+            Filing Status
+            <Tooltip text="Select your tax filing status. This determines which tax brackets apply and whether to include spouse information." />
           </label>
           <select name="num_people" value={formData.num_people} onChange={handleChange}>
             <option value="single">Single</option>
-            <option value="couple">Married/Couple</option>
+            <option value="married_jointly">Married Filing Jointly</option>
+            <option value="married_separately">Married Filing Separately</option>
+            <option value="head_of_household">Head of Household</option>
           </select>
         </div>
 
@@ -291,7 +298,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Age
@@ -312,7 +319,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Expected Longevity' : 'Expected Longevity'}
+              {showSpouseFields() ? 'Your Expected Longevity' : 'Expected Longevity'}
               <Tooltip text="Expected lifespan. Used to project total account values and tax savings over your lifetime. Consider family history and health factors." />
             </label>
             <input
@@ -326,7 +333,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Expected Longevity
@@ -347,7 +354,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Retirement Year' : 'Retirement Year'}
+              {showSpouseFields() ? 'Your Retirement Year' : 'Retirement Year'}
               <Tooltip text="Year when you plan to retire or have already retired. Retirement timing affects income levels and optimal conversion strategy." />
             </label>
             <input
@@ -361,7 +368,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Retirement Year
@@ -404,7 +411,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Annual Social Security ($)' : 'Annual Social Security ($)'}
+              {showSpouseFields() ? 'Your Annual Social Security ($)' : 'Annual Social Security ($)'}
               <Tooltip text="Expected annual Social Security benefit. Social Security income is partially taxable and affects your overall tax bracket. Delaying benefits increases your monthly payment." />
             </label>
             <input
@@ -416,7 +423,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Annual Social Security ($)
@@ -436,7 +443,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Social Security Start Age' : 'Social Security Start Age'}
+              {showSpouseFields() ? 'Your Social Security Start Age' : 'Social Security Start Age'}
               <Tooltip text="Age when you plan to begin receiving Social Security. You can start as early as 62 (reduced benefit) or delay until 70 (maximum benefit)." />
             </label>
             <input
@@ -449,7 +456,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Social Security Start Age
@@ -470,7 +477,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Annual Pension ($)' : 'Annual Pension ($)'}
+              {showSpouseFields() ? 'Your Annual Pension ($)' : 'Annual Pension ($)'}
               <Tooltip text="Annual pension income from employer-sponsored defined benefit plans. Pension income is fully taxable as ordinary income." />
             </label>
             <input
@@ -482,7 +489,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Annual Pension ($)
@@ -502,7 +509,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Pension Has Cost of Living Adjustment (COLA)?' : 'Pension Has Cost of Living Adjustment (COLA)?'}
+              {showSpouseFields() ? 'Your Pension Has Cost of Living Adjustment (COLA)?' : 'Pension Has Cost of Living Adjustment (COLA)?'}
               <Tooltip text="Whether your pension includes automatic annual increases to keep pace with inflation. COLA pensions maintain purchasing power over time." />
             </label>
             <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
@@ -543,7 +550,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             </div>
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Pension Has Cost of Living Adjustment (COLA)?
@@ -592,7 +599,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Pension Survivorship Benefit (%)' : 'Pension Survivorship Benefit (%)'}
+              {showSpouseFields() ? 'Your Pension Survivorship Benefit (%)' : 'Pension Survivorship Benefit (%)'}
               <Tooltip text="Percentage of your pension that continues to your surviving spouse after your death. Common options are 0% (single life), 50%, 75%, or 100% (joint and survivor). Higher survivorship reduces initial monthly payment." />
             </label>
             <input
@@ -606,7 +613,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Pension Survivorship Benefit (%)
@@ -675,7 +682,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Bank Accounts (Savings, Checking, CD, Money Market) ($)' : 'Bank Accounts (Savings, Checking, CD, Money Market) ($)'}
+              {showSpouseFields() ? 'Your Bank Accounts (Savings, Checking, CD, Money Market) ($)' : 'Bank Accounts (Savings, Checking, CD, Money Market) ($)'}
               <Tooltip text="Liquid cash holdings in savings, checking, CDs, and money market accounts. Interest earned is taxable annually." />
             </label>
             <input
@@ -687,7 +694,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Bank Accounts (Savings, Checking, CD, Money Market) ($)
@@ -707,7 +714,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Brokerage & Mutual Funds (Non-Retirement) ($)' : 'Brokerage & Mutual Funds (Non-Retirement) ($)'}
+              {showSpouseFields() ? 'Your Brokerage & Mutual Funds (Non-Retirement) ($)' : 'Brokerage & Mutual Funds (Non-Retirement) ($)'}
               <Tooltip text="Non-retirement investment accounts including taxable brokerage accounts, mutual funds in individual/joint/trust names. Capital gains are taxed when realized." />
             </label>
             <input
@@ -719,7 +726,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Brokerage & Mutual Funds (Non-Retirement) ($)
@@ -739,7 +746,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Cryptocurrency Holdings ($)' : 'Cryptocurrency Holdings ($)'}
+              {showSpouseFields() ? 'Your Cryptocurrency Holdings ($)' : 'Cryptocurrency Holdings ($)'}
               <Tooltip text="Current market value of cryptocurrency holdings (Bitcoin, Ethereum, etc.). Crypto is treated as property by the IRS, with capital gains tax on sales or exchanges." />
             </label>
             <input
@@ -751,7 +758,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Cryptocurrency Holdings ($)
@@ -771,7 +778,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
         <div className="form-row">
           <div className="form-group">
             <label>
-              {formData.num_people === 'couple' ? 'Your Precious Metals ($)' : 'Precious Metals ($)'}
+              {showSpouseFields() ? 'Your Precious Metals ($)' : 'Precious Metals ($)'}
               <Tooltip text="Market value of physical precious metals (gold, silver, platinum, palladium). Collectibles and precious metals are subject to higher capital gains tax rates (28% max) when sold." />
             </label>
             <input
@@ -783,7 +790,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             />
           </div>
 
-          {formData.num_people === 'couple' && (
+          {showSpouseFields() && (
             <div className="form-group">
               <label>
                 Spouse Precious Metals ($)
@@ -843,7 +850,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
           marginTop: '25px',
           marginBottom: '20px',
           border: '2px solid #93c5fd',
-          maxWidth: formData.num_people === 'single' ? '600px' : '100%',
+          maxWidth: !showSpouseFields() ? '600px' : '100%',
           transition: 'max-width 0.3s ease'
         }}>
           <h3 style={{
@@ -872,7 +879,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               />
             </div>
 
-            {formData.num_people === 'couple' && (
+            {showSpouseFields() && (
               <div className="form-group">
                 <label>
                   Spouse Traditional IRA/401k ($)
@@ -893,10 +900,10 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             <PortfolioSelector
               value={formData.allocation_traditional_person1}
               onChange={(allocation, returnRate) => handlePortfolioChange('traditional_person1', allocation, returnRate)}
-              label={formData.num_people === 'couple' ? 'Your Traditional IRA/401k Portfolio Allocation' : 'Traditional IRA/401k Portfolio Allocation'}
+              label={showSpouseFields() ? 'Your Traditional IRA/401k Portfolio Allocation' : 'Traditional IRA/401k Portfolio Allocation'}
             />
 
-            {formData.num_people === 'couple' && (
+            {showSpouseFields() && (
               <PortfolioSelector
                 value={formData.allocation_traditional_person2}
                 onChange={(allocation, returnRate) => handlePortfolioChange('traditional_person2', allocation, returnRate)}
@@ -913,7 +920,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
           borderRadius: '8px',
           marginBottom: '20px',
           border: '2px solid #86efac',
-          maxWidth: formData.num_people === 'single' ? '600px' : '100%',
+          maxWidth: !showSpouseFields() ? '600px' : '100%',
           transition: 'max-width 0.3s ease'
         }}>
           <h3 style={{
@@ -941,7 +948,7 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
               />
             </div>
 
-            {formData.num_people === 'couple' && (
+            {showSpouseFields() && (
               <div className="form-group">
                 <label>
                   Spouse Roth IRA/401k ($)
@@ -962,10 +969,10 @@ function InputForm({ initialData, questionnaireAnswers, onAnalysisComplete, onAn
             <PortfolioSelector
               value={formData.allocation_roth_person1}
               onChange={(allocation, returnRate) => handlePortfolioChange('roth_person1', allocation, returnRate)}
-              label={formData.num_people === 'couple' ? 'Your Roth IRA/401k Portfolio Allocation' : 'Roth IRA/401k Portfolio Allocation'}
+              label={showSpouseFields() ? 'Your Roth IRA/401k Portfolio Allocation' : 'Roth IRA/401k Portfolio Allocation'}
             />
 
-            {formData.num_people === 'couple' && (
+            {showSpouseFields() && (
               <PortfolioSelector
                 value={formData.allocation_roth_person2}
                 onChange={(allocation, returnRate) => handlePortfolioChange('roth_person2', allocation, returnRate)}

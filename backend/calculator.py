@@ -3,6 +3,8 @@ from datetime import datetime
 
 
 # 2026 Tax Brackets (using projected 2024 brackets adjusted for inflation)
+# Note: Single brackets are used for "single", "married_separately", and "head_of_household" filing statuses
+# Married brackets are used for "married_jointly" filing status
 TAX_BRACKETS_SINGLE = [
     (11600, 0.10),
     (47150, 0.12),
@@ -34,7 +36,8 @@ RMD_DIVISORS = {
 
 def calculate_tax(income: float, filing_status: str) -> float:
     """Calculate federal income tax based on brackets"""
-    brackets = TAX_BRACKETS_MARRIED if filing_status == "couple" else TAX_BRACKETS_SINGLE
+    # Use married brackets for married filing jointly, single brackets for all others
+    brackets = TAX_BRACKETS_MARRIED if filing_status == "married_jointly" else TAX_BRACKETS_SINGLE
 
     tax = 0
     previous_limit = 0
@@ -51,7 +54,8 @@ def calculate_tax(income: float, filing_status: str) -> float:
 
 def get_marginal_rate(income: float, filing_status: str) -> float:
     """Get marginal tax rate for given income"""
-    brackets = TAX_BRACKETS_MARRIED if filing_status == "couple" else TAX_BRACKETS_SINGLE
+    # Use married brackets for married filing jointly, single brackets for all others
+    brackets = TAX_BRACKETS_MARRIED if filing_status == "married_jointly" else TAX_BRACKETS_SINGLE
 
     for limit, rate in brackets:
         if income <= limit:
@@ -116,8 +120,8 @@ def analyze_roth_conversion(request: AnalysisRequest) -> AnalysisResult:
     age = demo.age_person1
     longevity = demo.longevity_person1
 
-    # For couples, use the longer longevity for projections (survivor benefit)
-    if demo.num_people == "couple" and demo.longevity_person2:
+    # For married filers, use the longer longevity for projections (survivor benefit)
+    if (demo.num_people in ["married_jointly", "married_separately"]) and demo.longevity_person2:
         longevity = max(demo.longevity_person1, demo.longevity_person2)
 
     # Calculate total traditional IRA balance
